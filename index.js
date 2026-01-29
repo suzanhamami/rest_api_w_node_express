@@ -9,6 +9,18 @@ app.get('/api/courses', (req,res) => {
     res.send([1, 2, 3]);
 });
 
+app.get('/api/courses/:id', (req,res) => {
+    res.send(req.params.id);
+})
+//we can have multiple parameters:
+app.get('/api/posts/:year/:month', (req,res) => {
+    res.send(req.params);
+})
+//for query: like ?sortBy=name
+app.get('/api/posts/:year/:month', (req,res) => {
+    res.send(req.query);
+})
+
 //PORT env var
 process.env.PORT=5000;
 //! i should set the port by set port=5000 but its not working in the terminal so i did it manually
