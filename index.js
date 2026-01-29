@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+//?for parsing json
+app.use(express.json());
+
 const courses =[
     { id: 1, name: 'course1 '},
     { id: 2, name: 'course2 '},
@@ -22,6 +25,15 @@ app.get('/api/courses/:id', (req,res) => {
     else
         res.send(course);
 })
+
+app.post('/api/courses', (req,res) => {
+    const course = {
+        id: courses.length + 1,
+        name: req.body.name
+    };
+    courses.push(course);
+    res.send(course);
+});
 
 //PORT env var
 process.env.PORT=5000;
