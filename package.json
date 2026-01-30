@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/suzanhamami/rest_api_w_node_express#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "joi": "^18.0.2"
   }
 }
