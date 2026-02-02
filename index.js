@@ -28,17 +28,36 @@ app.get('/api/courses/:id', (req, res) => {
 })
 
 app.post('/api/courses', (req, res) => {
-    const schema = {
+    //!NEW SYNTAX FOR JOI NOT LIKE THE VIDEO
+    const schema = Joi.object({
         name: Joi.string().min(3).required()
-    };
-    // const result = Joi.validate(req.body, schema);
-    // console.log(result);
+    });
+    //!
+    //! const result = Joi.validate(req.body, schema);
+    //! console.log(result);
 
-    if (!req.body.name || req.body.name.length < 3) {
-        //400 Bad Request
-        res.status(400).send('Name is required and should be min 3 chars');
-        return;
+    const result = schema.validate(req.body);
+    console.log(result);
+    //!This is the log if its an error, if not it only contains the value property
+    // {
+    //   value: { name: 'ne' },
+    //   error: [Error [ValidationError]: "name" length must be at least 3 characters long] {
+    //     _original: { name: 'ne' },
+    //     details: [ [Object] ]
+    //   }
+    // }
+    if(result.error){
+        res.status(400).send(result.error.details[0].message);
     }
+    //? Access results this is from googleai:
+    // const { error, value } = validationResult;
+
+    // if (error) {
+    //     console.error(error.details[0].message);
+    // } else {
+    //     console.log('Data is valid:', value);
+    // }
+
     const course = {
         id: courses.length + 1,
         name: req.body.name
