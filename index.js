@@ -83,7 +83,6 @@ function validateCourse(course) {
 }
 
 //PORT env var
-process.env.PORT = 5000;
-//! i should set the port by set port=5000 but its not working in the terminal so i did it manually
+//! for powershell: $env:port=5000 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
