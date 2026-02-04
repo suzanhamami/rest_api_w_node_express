@@ -29,35 +29,13 @@ app.get('/api/courses/:id', (req, res) => {
 
 app.post('/api/courses', (req, res) => {
     //!NEW SYNTAX FOR JOI NOT LIKE THE VIDEO
-    const schema = Joi.object({
-        name: Joi.string().min(3).required()
-    });
-    //!
-    //! const result = Joi.validate(req.body, schema);
-    //! console.log(result);
-
-    const result = schema.validate(req.body);
-    console.log(result);
-    //!This is the log if its an error, if not it only contains the value property
-    // {
-    //   value: { name: 'ne' },
-    //   error: [Error [ValidationError]: "name" length must be at least 3 characters long] {
-    //     _original: { name: 'ne' },
-    //     details: [ [Object] ]
-    //   }
-    // }
-    if(result.error){
-        res.status(400).send(result.error.details[0].message);
+    //? NEW VALIDATION FUNCTION
+    const { error } = validateCourse(req.body); 
+    if(error){
+        res.status(400).send(error.details[0].message);
+        return;
     }
-    //? Access results this is from googleai:
-    // const { error, value } = validationResult;
-
-    // if (error) {
-    //     console.error(error.details[0].message);
-    // } else {
-    //     console.log('Data is valid:', value);
-    // }
-
+   
     const course = {
         id: courses.length + 1,
         name: req.body.name
@@ -65,6 +43,33 @@ app.post('/api/courses', (req, res) => {
     courses.push(course);
     res.send(course);
 });
+
+app.put('/api/courses/:id', (req,res) => {
+    //lookup the course
+    //if not existent, return 404
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if (!course)
+        res.status(404).send('The course was not found');
+    //validate
+    //if invalid, return 400 (bad request)
+    const { error } = validateCourse(req.body); 
+    if(error){
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+    //update course
+    //return updated course
+    course.name = req.body.name;
+    res.send(course);
+});
+
+function validateCourse(course){
+    const schema = Joi.object({
+        name: Joi.string().min(3).required()
+    });
+
+    return schema.validate(course);
+}
 
 //PORT env var
 process.env.PORT = 5000;
