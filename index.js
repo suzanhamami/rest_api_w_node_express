@@ -22,7 +22,7 @@ app.get('/api/courses', (req, res) => {
 app.get('/api/courses/:id', (req, res) => {
     const course = courses.find(c => c.id === parseInt(req.params.id));
     if (!course)
-        res.status(404).send('The course was not found');
+        return res.status(404).send('The course was not found');
     else
         res.send(course);
 })
@@ -30,12 +30,10 @@ app.get('/api/courses/:id', (req, res) => {
 app.post('/api/courses', (req, res) => {
     //!NEW SYNTAX FOR JOI NOT LIKE THE VIDEO
     //? NEW VALIDATION FUNCTION
-    const { error } = validateCourse(req.body); 
-    if(error){
-        res.status(400).send(error.details[0].message);
-        return;
-    }
-   
+    const { error } = validateCourse(req.body);
+    if (error)
+        return res.status(400).send(error.details[0].message);
+
     const course = {
         id: courses.length + 1,
         name: req.body.name
@@ -44,26 +42,35 @@ app.post('/api/courses', (req, res) => {
     res.send(course);
 });
 
-app.put('/api/courses/:id', (req,res) => {
+app.put('/api/courses/:id', (req, res) => {
     //lookup the course
     //if not existent, return 404
     const course = courses.find(c => c.id === parseInt(req.params.id));
     if (!course)
-        res.status(404).send('The course was not found');
+        return res.status(404).send('The course was not found');
     //validate
     //if invalid, return 400 (bad request)
-    const { error } = validateCourse(req.body); 
-    if(error){
-        res.status(400).send(error.details[0].message);
-        return;
-    }
+    const { error } = validateCourse(req.body);
+    if (error)
+        return res.status(400).send(error.details[0].message);
+
     //update course
     //return updated course
     course.name = req.body.name;
     res.send(course);
 });
 
-function validateCourse(course){
+app.delete('/api/courses/:id', (req, res) => {
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if (!course)
+        return res.status(404).send('The course was not found');
+
+    const index = courses.indexOf(course);
+    courses.splice(index, 1);
+    res.send(course);
+});
+
+function validateCourse(course) {
     const schema = Joi.object({
         name: Joi.string().min(3).required()
     });
