@@ -20,7 +20,7 @@ app.get('/api/courses', (req, res) => {
 });
 
 app.get('/api/courses/:id', (req, res) => {
-    const course = courses.find(c => c.id === parseInt(req.params.id));
+    const course = lookupCourse(req.params.id);
     if (!course)
         return res.status(404).send('The course was not found');
     else
@@ -45,7 +45,7 @@ app.post('/api/courses', (req, res) => {
 app.put('/api/courses/:id', (req, res) => {
     //lookup the course
     //if not existent, return 404
-    const course = courses.find(c => c.id === parseInt(req.params.id));
+    const course = lookupCourse(req.params.id);
     if (!course)
         return res.status(404).send('The course was not found');
     //validate
@@ -61,7 +61,7 @@ app.put('/api/courses/:id', (req, res) => {
 });
 
 app.delete('/api/courses/:id', (req, res) => {
-    const course = courses.find(c => c.id === parseInt(req.params.id));
+    const course = lookupCourse(req.params.id);
     if (!course)
         return res.status(404).send('The course was not found');
 
@@ -69,6 +69,10 @@ app.delete('/api/courses/:id', (req, res) => {
     courses.splice(index, 1);
     res.send(course);
 });
+
+function lookupCourse(id){
+    return course = courses.find(c => c.id === parseInt(id));
+}
 
 function validateCourse(course) {
     const schema = Joi.object({
