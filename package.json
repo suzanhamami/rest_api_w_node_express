@@ -20,6 +20,8 @@
   "homepage": "https://github.com/suzanhamami/rest_api_w_node_express#readme",
   "dependencies": {
     "express": "^5.2.1",
-    "joi": "^18.0.2"
+    "joi": "^18.0.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }
